@@ -2,7 +2,13 @@ package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx;
 
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
+import java.util.List;
 
 public abstract class CanvasController {
 
@@ -17,6 +23,16 @@ public abstract class CanvasController {
 
     private static double shiftX = 0;
     private static double shiftY = 0;
+    private static Canvas canvas;
+    private static List<Primitive> figures;
+
+    public static void setCanvas(Canvas canvas) {
+        CanvasController.canvas = canvas;
+    }
+
+    public static void setFigures(List<Primitive> figures) {
+        CanvasController.figures = figures;
+    }
 
     //On Press
     private static EventHandler<MouseEvent> canvasOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
@@ -50,6 +66,22 @@ public abstract class CanvasController {
         }
     };
 
+    public static void drawFigures(Canvas canvas, List<Primitive> figures) {
+        PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+        for (Primitive figure : figures) {
+            Primitive primitive = figure;
+            for (int i = 0; i < figure.getX().length; i++) {
+                pixelWriter.setColor((int)(primitive.getX()[i] + shiftX), (int)(primitive.getY()[i] + shiftY), Color.BLACK);
+            }
+        }
+    }
+
+    public static void update(Canvas canvas, List<Primitive> figures) {
+        canvas.getGraphicsContext2D().setFill(Color.WHITE);
+        drawFigures(canvas, figures);
+        System.out.print("updated");
+    }
+
     public static double getShiftX() {
         return shiftX;
     }
@@ -59,14 +91,18 @@ public abstract class CanvasController {
     }
 
     public static EventHandler<MouseEvent> getCanvasOnMousePressedEventHandler() {
+        System.out.println("Mouse 1");
         return canvasOnMousePressedEventHandler;
     }
 
     public static EventHandler<MouseEvent> getCanvasOnMouseDraggedEventHandler() {
+        System.out.println("Mouse 2");
         return canvasOnMouseDraggedEventHandler;
     }
 
     public static EventHandler<MouseEvent> getCanvasOnMouseReleaseEventHandler() {
+        System.out.println("Mouse 3");
+        update(canvas, figures);
         return canvasOnMouseReleaseEventHandler;
     }
 }

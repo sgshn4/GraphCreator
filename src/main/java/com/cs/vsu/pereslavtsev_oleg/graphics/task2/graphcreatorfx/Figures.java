@@ -4,12 +4,10 @@ import com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Figures {
-    public Figures() {
+public abstract class Figures {
 
-    }
 
-    public Primitive createLine(int x1, int y1, int x2, int y2) {
+    public static Primitive createLine(int x1, int y1, int x2, int y2) {
         List<Integer> pointsX = new ArrayList<>();
         List<Integer> pointsY = new ArrayList<>();
         double dx = x2 - x1;

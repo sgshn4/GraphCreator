@@ -1,21 +1,16 @@
 package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HelloController {
 
-    double orgSceneX, orgSceneY;
-    double orgTranslateX, orgTranslateY;
 
     @FXML
     AnchorPane anchorPane;
@@ -30,30 +25,16 @@ public class HelloController {
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
         GraphicsContext gc =  canvas.getGraphicsContext2D();
         gc.fillRect(0, 0, 100, 100);
+        Primitive line = Figures.createLine(300, 300, 400, 400);
+        List<Primitive> primitives = new ArrayList<>();
+        CanvasController.setCanvas(canvas);
+        primitives.add(line);
+        CanvasController.setFigures(primitives);
 
         canvas.setOnMousePressed(CanvasController.getCanvasOnMousePressedEventHandler());
         canvas.setOnMouseDragged(CanvasController.getCanvasOnMouseDraggedEventHandler());
         canvas.setOnMouseReleased(CanvasController.getCanvasOnMouseReleaseEventHandler());
-//        canvas.setOnMouseClicked(event -> {
-//            switch (event.getButton()) {
-//                case PRIMARY -> handlePrimaryClick(canvas.getGraphicsContext2D(), event);
-//            }
-//        });
-    }
 
-    private void handlePrimaryClick(GraphicsContext graphicsContext, MouseEvent event) {
-        final Point2D clickPoint = new Point2D(event.getX(), event.getY());
-
-        final int POINT_RADIUS = 3;
-        graphicsContext.fillOval(
-                clickPoint.getX() - POINT_RADIUS, clickPoint.getY() - POINT_RADIUS,
-                2 * POINT_RADIUS, 2 * POINT_RADIUS);
-
-        if (points.size() > 0) {
-            final Point2D lastPoint = points.get(points.size() - 1);
-            graphicsContext.strokeLine(lastPoint.getX(), lastPoint.getY(), clickPoint.getX(), clickPoint.getY());
-        }
-        points.add(clickPoint);
     }
 
 
