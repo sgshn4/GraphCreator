@@ -35,7 +35,7 @@ public abstract class CanvasController {
     }
 
     //On Press
-    private static EventHandler<MouseEvent> canvasOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
+    public static EventHandler<MouseEvent> canvasOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
             orgSceneX = mouseEvent.getSceneX();
@@ -46,7 +46,7 @@ public abstract class CanvasController {
     };
 
     //On Drag
-    private static EventHandler<MouseEvent> canvasOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+    public static EventHandler<MouseEvent> canvasOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
             mouseEvent.getEventType();
@@ -54,15 +54,18 @@ public abstract class CanvasController {
             offsetY = mouseEvent.getSceneY() - orgSceneY;
             newTranslateX = orgTranslateX + offsetX;
             newTranslateY = orgTranslateY + offsetY;
+            update(canvas, figures);
+            shiftX += newTranslateX;
+            shiftY += newTranslateY;
+            System.out.println(newTranslateX + " " + newTranslateY);
         }
     };
 
     //On Release
-    private static EventHandler<MouseEvent> canvasOnMouseReleaseEventHandler = new EventHandler<MouseEvent>() {
+    public static EventHandler<MouseEvent> canvasOnMouseReleaseEventHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-            shiftX += newTranslateX;
-            shiftY += newTranslateY;
+
         }
     };
 
@@ -78,8 +81,13 @@ public abstract class CanvasController {
 
     public static void update(Canvas canvas, List<Primitive> figures) {
         canvas.getGraphicsContext2D().setFill(Color.WHITE);
+        PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+        for (int i = 0; i < canvas.getWidth(); i++) {
+            for (int j = 0; j < canvas.getHeight(); j++) {
+                pixelWriter.setColor(i, j, Color.WHITE);
+            }
+        }
         drawFigures(canvas, figures);
-        System.out.print("updated");
     }
 
     public static double getShiftX() {

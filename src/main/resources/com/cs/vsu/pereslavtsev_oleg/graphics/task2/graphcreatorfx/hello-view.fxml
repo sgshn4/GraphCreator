@@ -3,5 +3,5 @@
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.HelloController">
-<Canvas fx:id="canvas" width="800" height="600" AnchorPane.topAnchor="30.0"/>
+<Canvas fx:id="canvas" width="1280" height="720" AnchorPane.topAnchor="30.0"/>
 </AnchorPane>
