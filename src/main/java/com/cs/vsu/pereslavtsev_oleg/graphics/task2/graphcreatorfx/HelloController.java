@@ -23,9 +23,13 @@ public class HelloController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
         Primitive line = Figures.createLine(300, 300, 400, 400);
+        Primitive rect = Figures.createRectangle(100, 100, 200, 200);
+        Primitive round = Figures.createRound(600, 600, 100);
         List<Primitive> primitives = new ArrayList<>();
         CanvasController.setCanvas(canvas);
+        primitives.add(round);
         primitives.add(line);
+        primitives.add(rect);
         CanvasController.setFigures(primitives);
 
         canvas.setOnMousePressed(CanvasController.canvasOnMousePressedEventHandler);

@@ -1,4 +1,4 @@
-package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.test;
+package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.parser;
 
 import java.util.HashMap;
 

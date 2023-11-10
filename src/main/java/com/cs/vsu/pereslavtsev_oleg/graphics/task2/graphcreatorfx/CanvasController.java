@@ -57,7 +57,6 @@ public abstract class CanvasController {
             update(canvas, figures);
             shiftX += newTranslateX;
             shiftY += newTranslateY;
-            System.out.println(newTranslateX + " " + newTranslateY);
         }
     };
 

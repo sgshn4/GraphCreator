@@ -10,4 +10,11 @@ public abstract class Utils {
         }
         return result;
     }
+
+    public static List<Integer> copyValue(List<Integer> target, int[] items) {
+        for (int i: items) {
+            target.add(i);
+        }
+        return target;
+    }
 }
