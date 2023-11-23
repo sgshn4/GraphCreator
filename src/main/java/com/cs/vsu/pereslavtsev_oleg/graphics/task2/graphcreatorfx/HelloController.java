@@ -26,7 +26,7 @@ public class HelloController {
         Primitive rect = Figures.createRectangle(100, 100, 200, 200);
         Primitive round = Figures.createRound(600, 600, 100);
         List<Primitive> primitives = new ArrayList<>();
-        CanvasController.setCanvas(canvas);
+        CanvasController.init(canvas);
         primitives.add(round);
         primitives.add(line);
         primitives.add(rect);
