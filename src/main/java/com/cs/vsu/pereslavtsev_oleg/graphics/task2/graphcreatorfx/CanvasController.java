@@ -154,4 +154,13 @@ public abstract class CanvasController {
         update(canvas, figures);
         return canvasOnMouseReleaseEventHandler;
     }
+
+    public static void setIsGridVisible(boolean isGridVisible) {
+        CanvasController.isGridVisible = isGridVisible;
+    }
+
+    public static void setIsAxisVisible(boolean isAxisVisible) {
+        CanvasController.isAxisVisible = isAxisVisible;
+        update(canvas, figures);
+    }
 }

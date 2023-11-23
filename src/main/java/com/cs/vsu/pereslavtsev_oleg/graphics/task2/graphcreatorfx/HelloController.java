@@ -22,6 +22,7 @@ public class HelloController {
     private Canvas canvas;
 
     ArrayList<Point2D> points = new ArrayList<Point2D>();
+    private boolean isSelected;
 
     @FXML
     private void initialize() {
@@ -50,6 +51,7 @@ public class HelloController {
 
     @FXML
     private void checkBoxAction() {
-
+        isSelected = !isSelected;
+        CanvasController.setIsAxisVisible(isSelected);
     }
 }
