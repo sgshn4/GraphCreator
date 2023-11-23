@@ -4,15 +4,20 @@ import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HelloController {
 
+    @FXML
+    VBox vBox;
 
     @FXML
-    AnchorPane anchorPane;
+    HBox hBox;
+
     @FXML
     private Canvas canvas;
 
@@ -20,8 +25,8 @@ public class HelloController {
 
     @FXML
     private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
-        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
+//        vBox.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
+//        vBox.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
         Primitive line = Figures.createLine(300, 300, 400, 400);
         Primitive rect = Figures.createRectangle(100, 100, 200, 200);
         Primitive round = Figures.createRound(600, 600, 100);
@@ -38,5 +43,13 @@ public class HelloController {
 
     }
 
+    @FXML
+    private void buttonAction() {
 
+    }
+
+    @FXML
+    private void checkBoxAction() {
+
+    }
 }
