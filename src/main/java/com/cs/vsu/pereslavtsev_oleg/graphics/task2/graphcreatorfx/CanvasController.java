@@ -96,10 +96,9 @@ public abstract class CanvasController {
 
     public static void drawFigures(List<Primitive> figures) {
         for (Primitive figure : figures) {
-            Primitive primitive = figure;
             for (int i = 0; i < figure.getX().length; i++) {
-                pixelWriter.setColor((int)(midX + primitive.getX()[i] + shiftX),
-                        (int)(midY + primitive.getY()[i] + shiftY), Color.BLACK);
+                pixelWriter.setColor((int)(midX + figure.getX()[i] + shiftX),
+                        (int)(midY + figure.getY()[i] + shiftY), Color.BLACK);
             }
         }
     }
