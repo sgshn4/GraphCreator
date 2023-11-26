@@ -21,9 +21,12 @@ public abstract class CanvasController {
     private static double offsetY;
     private static double newTranslateX;
     private static double newTranslateY;
-
     private static double shiftX = 0;
     private static double shiftY = 0;
+
+    private static int midX;
+    private static int midY;
+
     private static Canvas canvas;
     private static List<Primitive> figures;
     private static List<Primitive> subLayout;
@@ -78,6 +81,8 @@ public abstract class CanvasController {
         isGridVisible = false;
         isAxisVisible = true;
         CanvasController.canvas = canvas;
+        midX = (int)(canvas.getWidth() / 2);
+        midY = (int)(canvas.getHeight() / 2);
         subLayout.add(null);
         subLayout.add(null);
         createAxis(canvas);
@@ -93,7 +98,8 @@ public abstract class CanvasController {
         for (Primitive figure : figures) {
             Primitive primitive = figure;
             for (int i = 0; i < figure.getX().length; i++) {
-                pixelWriter.setColor((int)(primitive.getX()[i] + shiftX), (int)(primitive.getY()[i] + shiftY), Color.BLACK);
+                pixelWriter.setColor((int)(midX + primitive.getX()[i] + shiftX),
+                        (int)(midY + primitive.getY()[i] + shiftY), Color.BLACK);
             }
         }
     }
@@ -163,4 +169,5 @@ public abstract class CanvasController {
         CanvasController.isAxisVisible = isAxisVisible;
         update(canvas, figures);
     }
+
 }

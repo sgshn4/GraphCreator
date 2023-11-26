@@ -15,10 +15,13 @@ public class MatchParser {
 
     public Double getVariable(String variableName) {
         if (!variables.containsKey(variableName)) {
-            System.err.println("Error: Try get unexists variable '" + variableName + "'");
-            return 0.0;
+            setVariable(variableName, 0.0);
         }
         return variables.get(variableName);
+    }
+
+    public HashMap<String, Double> getVariables() {
+        return variables;
     }
 
     public double Parse(String s) throws Exception {
