@@ -29,19 +29,13 @@ public class HelloController {
 
     ArrayList<Point2D> points = new ArrayList<Point2D>();
     private boolean isSelected;
-    private MatchParser parser;
     private List<Primitive> primitives = new ArrayList<>();
 
     @FXML
     private void initialize() {
-//        vBox.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
-//        vBox.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
-        parser = new MatchParser();
         Primitive line = Figures.createLine(300, 300, 400, 400);
         Primitive rect = Figures.createRectangle(-50, -50, 50, 50);
-        Primitive round = Figures.createRound(600, 600, 100);
         CanvasController.init(canvas);
-        primitives.add(round);
         primitives.add(line);
         primitives.add(rect);
         CanvasController.setFigures(primitives);
@@ -54,24 +48,7 @@ public class HelloController {
 
     @FXML
     private void buttonAction() {
-            try {
-                parser.Parse(textField.getText());
-                HashMap<String, Double> variables = parser.getVariables();
-                for (String i : variables.keySet()) {
-                    int[] pointsX = new int[(int)(canvas.getWidth())];
-                    int[] pointsY = new int[(int)(canvas.getWidth())];
-                    for (int x = (int)(0 - canvas.getWidth() / 2); x < (int)(canvas.getWidth() / 2); x++) {
-                        parser.setVariable(i, (double)(x));
-                        pointsX[(int)(x + canvas.getWidth() / 2)] = x;
-                        pointsY[(int)(x + canvas.getWidth() / 2)] = (int)(parser.Parse(textField.getText()));
-                    }
-                    primitives.add(new Primitive(pointsX, pointsY));
-                    CanvasController.setFigures(primitives);
-                    System.out.println("Added");
-                }
-            } catch (Exception e) {
-                System.err.println("err: " + e);
-            }
+            CanvasController.addFigure(textField.getText());
     }
 
     @FXML

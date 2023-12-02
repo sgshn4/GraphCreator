@@ -1,14 +1,15 @@
 package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx;
 
+import com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.parser.MatchParser;
+import com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.utils.Utils;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class CanvasController {
@@ -35,6 +36,8 @@ public abstract class CanvasController {
     private static boolean isAxisVisible;
 
     private static PixelWriter pixelWriter;
+    private static MatchParser parser;
+
 
     public static void setFigures(List<Primitive> figures) {
         CanvasController.figures = figures;
@@ -76,6 +79,7 @@ public abstract class CanvasController {
 
     public static void init(Canvas canvas) {
         pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+        parser = new MatchParser();
         figures = new ArrayList<>();
         subLayout = new ArrayList<>();
         isGridVisible = false;
@@ -96,9 +100,15 @@ public abstract class CanvasController {
 
     public static void drawFigures(List<Primitive> figures) {
         for (Primitive figure : figures) {
-            for (int i = 0; i < figure.getX().length; i++) {
-                pixelWriter.setColor((int)(midX + figure.getX()[i] + shiftX),
-                        (int)(midY + figure.getY()[i] + shiftY), Color.BLACK);
+            System.out.println(figure.getY()[figure.getX().length - 1]);
+            for (int i = 1; i < figure.getX().length; i++) {
+                Primitive primitive = Figures.createLine(figure.getX()[i - 1], figure.getY()[i - 1],
+                        figure.getX()[i], figure.getY()[i]);
+                for (int j = 0; j < primitive.getX().length; j++) {
+                    pixelWriter.setColor((int)(midX + primitive.getX()[j] + shiftX),
+                            (int)(midY + primitive.getY()[j] + shiftY), Color.BLACK);
+                }
+
             }
         }
     }
@@ -167,6 +177,27 @@ public abstract class CanvasController {
     public static void setIsAxisVisible(boolean isAxisVisible) {
         CanvasController.isAxisVisible = isAxisVisible;
         update(canvas, figures);
+    }
+
+    public static void addFigure(String formula) {
+        try {
+            parser.Parse(formula);
+            HashMap<String, Double> variables = parser.getVariables();
+            for (String i : variables.keySet()) {
+                List<Integer> pointsX = new ArrayList<>();
+                List<Integer> pointsY = new ArrayList<>();
+                for (int x = (int)(0 - canvas.getWidth() / 2 - shiftX); x < (int)(canvas.getWidth() / 2 - shiftX); x++) {
+                    parser.setVariable(i, (double)(x));
+                    if (parser.Parse(formula) > canvas.getHeight() + shiftY) break;
+                    pointsX.add(x);
+                    pointsY.add((int)(parser.Parse(formula)));
+                }
+                figures.add(new Primitive(Utils.listIntToArray(pointsX), Utils.listIntToArray(pointsY)));
+                System.out.println("Added");
+            }
+        } catch (Exception e) {
+            System.err.println("err: " + e);
+        }
     }
 
 }
