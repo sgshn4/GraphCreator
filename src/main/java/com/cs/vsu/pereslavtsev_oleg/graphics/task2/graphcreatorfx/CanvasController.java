@@ -30,6 +30,7 @@ public abstract class CanvasController {
 
     private static Canvas canvas;
     private static List<Primitive> figures;
+    private static List<String> formulas;
     private static List<Primitive> subLayout;
 
     private static boolean isGridVisible;
@@ -82,6 +83,7 @@ public abstract class CanvasController {
         parser = new MatchParser();
         figures = new ArrayList<>();
         subLayout = new ArrayList<>();
+        formulas = new ArrayList<>();
         isGridVisible = false;
         isAxisVisible = true;
         CanvasController.canvas = canvas;
@@ -99,16 +101,18 @@ public abstract class CanvasController {
     }
 
     public static void drawFigures(List<Primitive> figures) {
+        List<String> temp = formulas;
+        for (String formula : temp) {
+            mathFigure(formula);
+        }
         for (Primitive figure : figures) {
-            System.out.println(figure.getY()[figure.getX().length - 1]);
             for (int i = 1; i < figure.getX().length; i++) {
                 Primitive primitive = Figures.createLine(figure.getX()[i - 1], figure.getY()[i - 1],
                         figure.getX()[i], figure.getY()[i]);
                 for (int j = 0; j < primitive.getX().length; j++) {
                     pixelWriter.setColor((int)(midX + primitive.getX()[j] + shiftX),
-                            (int)(midY + primitive.getY()[j] + shiftY), Color.BLACK);
+                            (int)(midY - primitive.getY()[j] + shiftY), Color.BLACK);
                 }
-
             }
         }
     }
@@ -179,14 +183,25 @@ public abstract class CanvasController {
         update(canvas, figures);
     }
 
-    public static void addFigure(String formula) {
+    public static void mathFigure(String formula) {
         try {
+            if (findFormula(formula) != -1) {
+                formulas.remove(formula);
+                System.out.println("changed");
+            }
+            formulas.add(formula);
             parser.Parse(formula);
             HashMap<String, Double> variables = parser.getVariables();
             for (String i : variables.keySet()) {
                 List<Integer> pointsX = new ArrayList<>();
                 List<Integer> pointsY = new ArrayList<>();
-                for (int x = (int)(0 - canvas.getWidth() / 2 - shiftX); x < (int)(canvas.getWidth() / 2 - shiftX); x++) {
+                for (int x = 0; x < (int)(canvas.getWidth() / 2); x++) {
+                    parser.setVariable(i, (double)(x));
+                    if (parser.Parse(formula) > canvas.getHeight() + shiftY) break;
+                    pointsX.add(x);
+                    pointsY.add((int)(parser.Parse(formula)));
+                }
+                for (int x = 0; x > (int)(-canvas.getWidth() / 2); x--) {
                     parser.setVariable(i, (double)(x));
                     if (parser.Parse(formula) > canvas.getHeight() + shiftY) break;
                     pointsX.add(x);
@@ -198,6 +213,13 @@ public abstract class CanvasController {
         } catch (Exception e) {
             System.err.println("err: " + e);
         }
+    }
+
+    private static int findFormula(String formula) {
+        for (int i = 0; i < formulas.size(); i++) {
+            if (formulas.get(i).equals(formula)) return i;
+        }
+        return -1;
     }
 
 }

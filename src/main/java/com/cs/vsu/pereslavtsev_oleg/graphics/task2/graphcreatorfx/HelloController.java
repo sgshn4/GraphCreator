@@ -1,16 +1,13 @@
 package com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx;
 
-import com.cs.vsu.pereslavtsev_oleg.graphics.task2.graphcreatorfx.parser.MatchParser;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class HelloController {
@@ -48,7 +45,7 @@ public class HelloController {
 
     @FXML
     private void buttonAction() {
-            CanvasController.addFigure(textField.getText());
+            CanvasController.mathFigure(textField.getText());
     }
 
     @FXML
