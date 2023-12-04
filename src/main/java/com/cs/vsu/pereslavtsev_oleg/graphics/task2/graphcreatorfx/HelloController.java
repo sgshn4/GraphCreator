@@ -35,7 +35,6 @@ public class HelloController {
         CanvasController.init(canvas);
         primitives.add(line);
         primitives.add(rect);
-        CanvasController.setFigures(primitives);
 
         canvas.setOnMousePressed(CanvasController.canvasOnMousePressedEventHandler);
         canvas.setOnMouseDragged(CanvasController.canvasOnMouseDraggedEventHandler);

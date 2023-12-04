@@ -30,8 +30,6 @@ public abstract class CanvasController {
 
     private static Canvas canvas;
     private static List<Figure> figureList;
-    private static List<Primitive> figures;
-    private static List<String> formulas;
     private static List<Primitive> subLayout;
 
     private static boolean isGridVisible;
@@ -40,10 +38,6 @@ public abstract class CanvasController {
     private static PixelWriter pixelWriter;
     private static MatchParser parser;
 
-
-    public static void setFigures(List<Primitive> figures) {
-        CanvasController.figures = figures;
-    }
 
     //On Press
     public static EventHandler<MouseEvent> canvasOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
@@ -65,9 +59,10 @@ public abstract class CanvasController {
             offsetY = mouseEvent.getSceneY() - orgSceneY;
             newTranslateX = orgTranslateX + offsetX;
             newTranslateY = orgTranslateY + offsetY;
-            update(canvas, figures);
+            update();
             shiftX += newTranslateX;
             shiftY += newTranslateY;
+            System.out.println(shiftX + " " + shiftY);
         }
     };
 
@@ -82,9 +77,7 @@ public abstract class CanvasController {
     public static void init(Canvas canvas) {
         pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
         parser = new MatchParser();
-        figures = new ArrayList<>();
         subLayout = new ArrayList<>();
-        formulas = new ArrayList<>();
         figureList = new ArrayList<>();
         isGridVisible = false;
         isAxisVisible = true;
@@ -102,19 +95,21 @@ public abstract class CanvasController {
         }
     }
 
-    public static void drawFigures(List<Primitive> figures) {
+    private static void drawFigures() {
         List<Figure> temp = figureList;
         for (Figure formula : temp) {
             mathFigure(formula.getFormula());
         }
         for (Figure figure : figureList) {
             for (int i = 1; i < figure.getPrimitive().getX().length; i++) {
-                Primitive primitive = Figures.createLine(figure.getPrimitive().getX()[i - 1],
-                        figure.getPrimitive().getY()[i - 1], figure.getPrimitive().getX()[i],
-                        figure.getPrimitive().getY()[i]);
-                for (int j = 0; j < primitive.getX().length; j++) {
-                    pixelWriter.setColor((int)(midX + primitive.getX()[j] + shiftX),
-                            (int)(midY - primitive.getY()[j] + shiftY), Color.BLACK);
+                if (i != figure.getPrimitive().getX().length / 2) {
+                    Primitive primitive = Figures.createLine(figure.getPrimitive().getX()[i - 1],
+                            figure.getPrimitive().getY()[i - 1], figure.getPrimitive().getX()[i],
+                            figure.getPrimitive().getY()[i]);
+                    for (int j = 0; j < primitive.getX().length; j++) {
+                        pixelWriter.setColor((int) (midX + primitive.getX()[j] + shiftX),
+                                (int) (midY - primitive.getY()[j] + shiftY), Color.BLACK);
+                    }
                 }
             }
         }
@@ -146,11 +141,11 @@ public abstract class CanvasController {
                 (int)(canvas.getWidth() / 2), (int)(canvas.getHeight() - shiftY)));
     }
 
-    public static void update(Canvas canvas, List<Primitive> figures) {
+    private static void update() {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         createAxis(canvas);
         drawSubLayout();
-        drawFigures(figures);
+        drawFigures();
     }
 
     public static double getShiftX() {
@@ -173,7 +168,7 @@ public abstract class CanvasController {
 
     public static EventHandler<MouseEvent> getCanvasOnMouseReleaseEventHandler() {
         System.out.println("Mouse 3");
-        update(canvas, figures);
+        update();
         return canvasOnMouseReleaseEventHandler;
     }
 
@@ -183,24 +178,23 @@ public abstract class CanvasController {
 
     public static void setIsAxisVisible(boolean isAxisVisible) {
         CanvasController.isAxisVisible = isAxisVisible;
-        update(canvas, figures);
+        update();
     }
 
     public static void mathFigure(String formula) {
         try {
-
             parser.Parse(formula);
             HashMap<String, Double> variables = parser.getVariables();
             for (String i : variables.keySet()) {
                 List<Integer> pointsX = new ArrayList<>();
                 List<Integer> pointsY = new ArrayList<>();
-                for (int x = 0; x < (int)(canvas.getWidth() / 2); x++) {
+                for (int x = (int)(midX - shiftX); x < (int)(canvas.getWidth() - shiftX); x++) {
                     parser.setVariable(i, (double)(x));
                     if (parser.Parse(formula) > canvas.getHeight() + shiftY) break;
                     pointsX.add(x);
                     pointsY.add((int)(parser.Parse(formula)));
                 }
-                for (int x = 0; x > (int)(-canvas.getWidth() / 2); x--) {
+                for (int x = (int)(midX - shiftX); x > (int)(-canvas.getWidth() - shiftX); x--) {
                     parser.setVariable(i, (double)(x));
                     if (parser.Parse(formula) > canvas.getHeight() + shiftY) break;
                     pointsX.add(x);
@@ -209,10 +203,8 @@ public abstract class CanvasController {
                 Primitive primitive = new Primitive(Utils.listIntToArray(pointsX), Utils.listIntToArray(pointsY));
                 if (findFormula(formula) == -1) {
                     figureList.add(new Figure(formula, primitive));
-                    System.out.println("Added");
                 } else {
                     figureList.get(findFormula(formula)).setPrimitive(primitive);
-                    System.out.println("changed");
                 }
 
             }
