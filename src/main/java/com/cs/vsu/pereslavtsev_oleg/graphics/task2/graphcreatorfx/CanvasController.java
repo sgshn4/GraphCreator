@@ -29,6 +29,7 @@ public abstract class CanvasController {
     private static int midY;
 
     private static Canvas canvas;
+    private static List<Figure> figureList;
     private static List<Primitive> figures;
     private static List<String> formulas;
     private static List<Primitive> subLayout;
@@ -84,6 +85,7 @@ public abstract class CanvasController {
         figures = new ArrayList<>();
         subLayout = new ArrayList<>();
         formulas = new ArrayList<>();
+        figureList = new ArrayList<>();
         isGridVisible = false;
         isAxisVisible = true;
         CanvasController.canvas = canvas;
@@ -101,14 +103,15 @@ public abstract class CanvasController {
     }
 
     public static void drawFigures(List<Primitive> figures) {
-        List<String> temp = formulas;
-        for (String formula : temp) {
-            mathFigure(formula);
+        List<Figure> temp = figureList;
+        for (Figure formula : temp) {
+            mathFigure(formula.getFormula());
         }
-        for (Primitive figure : figures) {
-            for (int i = 1; i < figure.getX().length; i++) {
-                Primitive primitive = Figures.createLine(figure.getX()[i - 1], figure.getY()[i - 1],
-                        figure.getX()[i], figure.getY()[i]);
+        for (Figure figure : figureList) {
+            for (int i = 1; i < figure.getPrimitive().getX().length; i++) {
+                Primitive primitive = Figures.createLine(figure.getPrimitive().getX()[i - 1],
+                        figure.getPrimitive().getY()[i - 1], figure.getPrimitive().getX()[i],
+                        figure.getPrimitive().getY()[i]);
                 for (int j = 0; j < primitive.getX().length; j++) {
                     pixelWriter.setColor((int)(midX + primitive.getX()[j] + shiftX),
                             (int)(midY - primitive.getY()[j] + shiftY), Color.BLACK);
@@ -185,11 +188,7 @@ public abstract class CanvasController {
 
     public static void mathFigure(String formula) {
         try {
-            if (findFormula(formula) != -1) {
-                formulas.remove(formula);
-                System.out.println("changed");
-            }
-            formulas.add(formula);
+
             parser.Parse(formula);
             HashMap<String, Double> variables = parser.getVariables();
             for (String i : variables.keySet()) {
@@ -207,8 +206,15 @@ public abstract class CanvasController {
                     pointsX.add(x);
                     pointsY.add((int)(parser.Parse(formula)));
                 }
-                figures.add(new Primitive(Utils.listIntToArray(pointsX), Utils.listIntToArray(pointsY)));
-                System.out.println("Added");
+                Primitive primitive = new Primitive(Utils.listIntToArray(pointsX), Utils.listIntToArray(pointsY));
+                if (findFormula(formula) == -1) {
+                    figureList.add(new Figure(formula, primitive));
+                    System.out.println("Added");
+                } else {
+                    figureList.get(findFormula(formula)).setPrimitive(primitive);
+                    System.out.println("changed");
+                }
+
             }
         } catch (Exception e) {
             System.err.println("err: " + e);
@@ -216,8 +222,8 @@ public abstract class CanvasController {
     }
 
     private static int findFormula(String formula) {
-        for (int i = 0; i < formulas.size(); i++) {
-            if (formulas.get(i).equals(formula)) return i;
+        for (int i = 0; i < figureList.size(); i++) {
+            if (figureList.get(i).getFormula().equals(formula)) return i;
         }
         return -1;
     }
